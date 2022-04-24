@@ -7,9 +7,8 @@ use Illuminate\Http\Request;
 
 class RegionController extends Controller
 {
-    public function index()
+    public function create()
     {
-        $regions = Region::where('name', 'Алматинская область')->first();
-        dd($regions);
+        dd('Creating region');
     }
 }
