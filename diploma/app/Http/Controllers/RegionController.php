@@ -11,4 +11,9 @@ class RegionController extends Controller
     {
         dd('Creating region');
     }
+
+    public function showAll()
+    {
+        return Region::all();
+    }
 }

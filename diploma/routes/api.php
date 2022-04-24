@@ -19,7 +19,9 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
-    Route::get('/regions', [RegionController::class, 'one']);
+    Route::get('/regions', [RegionController::class, 'showAll']);
+    Route::get('/types', [\App\Http\Controllers\TypeController::class, 'showAll']);
+    Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'showAll']);
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
