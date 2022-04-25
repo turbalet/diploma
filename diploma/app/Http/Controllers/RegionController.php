@@ -17,12 +17,13 @@ class RegionController extends Controller
         return Region::all();
     }
 
-    public function showOne(Request $request)
+    public function showOne($id)
     {
-        $request->validate([
-            'id'=>'required'
-        ]);
-        return Region::where('id', $request->get('id'))->first();
+//        $request->validate([
+//            'id'=>'required'
+//        ]);
+//        $request->get('id')
+        return Region::where('id', $id)->first();
     }
 
     public function store(Request $request)
@@ -38,23 +39,22 @@ class RegionController extends Controller
         return $this->showAll();
     }
 
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $region = Region::find($request->get('id'));
+        $region = Region::find($id);
         $region->delete();
 
         return $this->showAll();
     }
 
 
-    public function update(Request $request)
+    public function update(Request $request,$id)
     {
         $request->validate([
-            'id'=>'required',
             'name'=>'required'
         ]);
 
-        $region = Region::find($request->get('id'));
+        $region = Region::find($id);
         $region->name =  $request->get('name');
         $region->save();
 

@@ -17,12 +17,9 @@ class CategoryController extends Controller
         return Category::all();
     }
 
-    public function showOne(Request $request)
+    public function showOne($id)
     {
-        $request->validate([
-            'id'=>'required'
-        ]);
-        return Category::where('id', $request->get('id'))->first();
+        return Category::where('id', $id)->first();
     }
 
     public function store(Request $request)
@@ -38,23 +35,22 @@ class CategoryController extends Controller
         return $this->showAll();
     }
 
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $category = Category::find($request->get('id'));
+        $category = Category::find($id);
         $category->delete();
 
         return $this->showAll();
     }
 
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'id'=>'required',
             'name'=>'required'
         ]);
 
-        $category = Category::find($request->get('id'));
+        $category = Category::find($id);
         $category->name =  $request->get('name');
         $category->save();
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Type;
+use Illuminate\Http\Request;
 
 class TypeController extends Controller
 {
@@ -16,12 +17,9 @@ class TypeController extends Controller
         return Type::all();
     }
 
-    public function showOne(Request $request)
+    public function showOne($id)
     {
-        $request->validate([
-            'id'=>'required'
-        ]);
-        return Type::where('id', $request->get('id'))->first();
+        return Type::where('id', $id)->first();
     }
 
     public function store(Request $request)
@@ -37,23 +35,22 @@ class TypeController extends Controller
         return $this->showAll();
     }
 
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $type = Type::find($request->get('id'));
+        $type = Type::find($id);
         $type->delete();
 
         return $this->showAll();
     }
 
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'id'=>'required',
             'name'=>'required'
         ]);
 
-        $type = Type::find($request->get('id'));
+        $type = Type::find($id);
         $type->name =  $request->get('name');
         $type->save();
 
