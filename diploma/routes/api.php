@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RegionController;
+use App\Http\Controllers\TypeController;
+use \App\Http\Controllers\UniversityController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,21 +24,27 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::get('/regions', [RegionController::class, 'showAll']);
     Route::get('/regions/{id}', [RegionController::class, 'showOne']);
-    Route::post('/regions/add', [RegionController::class, 'store']);
-    Route::delete('/regions/delete/{id}', [RegionController::class, 'destroy']);
-    Route::put('/regions/update/{id}', [RegionController::class, 'update']);
+    Route::post('/regions', [RegionController::class, 'store']);
+    Route::delete('/regions/{id}', [RegionController::class, 'destroy']);
+    Route::put('/regions/{id}', [RegionController::class, 'update']);
 
-    Route::get('/types', [\App\Http\Controllers\TypeController::class, 'showAll']);
-    Route::get('/types/{id}', [\App\Http\Controllers\TypeController::class, 'showOne']);
-    Route::post('/types/add', [\App\Http\Controllers\TypeController::class, 'store']);
-    Route::delete('/types/delete/{id}', [\App\Http\Controllers\TypeController::class, 'destroy']);
-    Route::put('/types/update/{id}', [\App\Http\Controllers\TypeController::class, 'update']);
+    Route::get('/types', [TypeController::class, 'showAll']);
+    Route::get('/types/{id}', [TypeController::class, 'showOne']);
+    Route::post('/types', [TypeController::class, 'store']);
+    Route::delete('/types/{id}', [TypeController::class, 'destroy']);
+    Route::put('/types/{id}', [TypeController::class, 'update']);
 
-    Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'showAll']);
-    Route::get('/categories/{id}', [\App\Http\Controllers\CategoryController::class, 'showOne']);
-    Route::post('/categories/add', [\App\Http\Controllers\CategoryController::class, 'store']);
-    Route::delete('/categories/delete/{id}', [\App\Http\Controllers\CategoryController::class, 'destroy']);
-    Route::put('/categories/update/{id}', [\App\Http\Controllers\CategoryController::class, 'update']);
+    Route::get('/categories', [CategoryController::class, 'showAll']);
+    Route::get('/categories/{id}', [CategoryController::class, 'showOne']);
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+    Route::put('/categories/{id}', [CategoryController::class, 'update']);
+
+    Route::get('/universities', [UniversityController::class, 'index']);
+    Route::get('/universities/{id}', [UniversityController::class, 'show']);
+    Route::post('/universities', [UniversityController::class, 'store']);
+    Route::delete('/universities/{id}', [UniversityController::class, 'destroy']);
+    Route::put('/universities/{id}', [UniversityController::class, 'update']);
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
