@@ -22,20 +22,20 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
-    Route::get('/regions', [RegionController::class, 'showAll']);
-    Route::get('/regions/{id}', [RegionController::class, 'showOne']);
+    Route::get('/regions', [RegionController::class, 'index']);
+    Route::get('/regions/{id}', [RegionController::class, 'show']);
     Route::post('/regions', [RegionController::class, 'store']);
     Route::delete('/regions/{id}', [RegionController::class, 'destroy']);
     Route::put('/regions/{id}', [RegionController::class, 'update']);
 
-    Route::get('/types', [TypeController::class, 'showAll']);
-    Route::get('/types/{id}', [TypeController::class, 'showOne']);
+    Route::get('/types', [TypeController::class, 'index']);
+    Route::get('/types/{id}', [TypeController::class, 'show']);
     Route::post('/types', [TypeController::class, 'store']);
     Route::delete('/types/{id}', [TypeController::class, 'destroy']);
     Route::put('/types/{id}', [TypeController::class, 'update']);
 
-    Route::get('/categories', [CategoryController::class, 'showAll']);
-    Route::get('/categories/{id}', [CategoryController::class, 'showOne']);
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('/categories/{id}', [CategoryController::class, 'show']);
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
     Route::put('/categories/{id}', [CategoryController::class, 'update']);
