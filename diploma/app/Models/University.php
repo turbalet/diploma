@@ -38,4 +38,9 @@ class University extends Model
     {
         return $this->belongsToMany(Speciality::class, 'university_speciality');
     }
+
+    public function programs(): BelongsToMany
+    {
+        return $this->belongsToMany(Program::class, 'university_program');
+    }
 }

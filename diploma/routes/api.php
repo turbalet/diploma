@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\TypeController;
 use \App\Http\Controllers\UniversityController;
+use \App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,6 +46,12 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::post('/universities', [UniversityController::class, 'store']);
     Route::delete('/universities/{id}', [UniversityController::class, 'destroy']);
     Route::put('/universities/{id}', [UniversityController::class, 'update']);
+
+    Route::get('/languages', [LanguageController::class, 'index']);
+    Route::get('/languages/{id}', [LanguageController::class, 'show']);
+    Route::post('/languages', [LanguageController::class, 'store']);
+    Route::delete('/languages/{id}', [LanguageController::class, 'destroy']);
+    Route::put('/languages/{id}', [LanguageController::class, 'update']);
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {

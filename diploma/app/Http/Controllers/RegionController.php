@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class RegionController extends Controller
 {
@@ -18,7 +19,7 @@ class RegionController extends Controller
      */
     public function index()
     {
-        return Region::all();
+        return response(Region::all(), 200);
     }
 
     /**
@@ -29,15 +30,23 @@ class RegionController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name'=>'required'
-        ]);
+        $validation = Validator::make($request->all(),
+            [
+                'name'=>'required'
+            ]);
+
+        if ($validation->fails()) {
+            return \response()->json([
+                'message' => $validation->errors()->messages()
+            ], 400);
+        }
 
         $region = new Region([
             'name' => $request->get('name')
         ]);
         $region->save();
-        return $this->index();
+
+        return response()->json($region, 200);
     }
 
     /**
@@ -48,7 +57,14 @@ class RegionController extends Controller
      */
     public function show($id)
     {
-        return Region::where('id', $id)->first();
+        $region = Region::where('id', $id)->first();
+        if (!$region) {
+            return response()->json([
+                'message' => "ERR_NOT_FOUND",
+            ], 404);
+        }
+
+        return $region;
     }
 
     /**
@@ -60,15 +76,30 @@ class RegionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name'=>'required'
-        ]);
+        $validation = Validator::make($request->all(),
+            [
+                'name'=>'required'
+            ]
+        );
+
+        if ($validation->fails()) {
+            return response()->json([
+                'message' => $validation->errors()->messages()
+            ], 400);
+        }
 
         $region = Region::find($id);
+
+        if (!$region) {
+            return response()->json([
+                'message'=> "ERR_NOT_FOUND",
+            ], 404);
+        }
+
         $region->name =  $request->get('name');
         $region->save();
 
-        return $this->index();
+        return $region;
     }
 
     /**

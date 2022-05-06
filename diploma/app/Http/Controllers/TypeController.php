@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class TypeController extends Controller
 {
@@ -18,7 +19,7 @@ class TypeController extends Controller
      */
     public function index()
     {
-        return Type::all();
+        return response(Type::all(), 200);
     }
 
     /**
@@ -29,15 +30,25 @@ class TypeController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name'=>'required'
-        ]);
+        $validation = Validator::make($request->all(),
+            [
+                'name'=>'required'
+            ]
+        );
+
+        if ($validation->fails()) {
+            return response()->json([
+                'message' => $validation->errors()->messages()
+            ], 400);
+        }
 
         $type = new Type([
             'name' => $request->get('name')
         ]);
+
         $type->save();
-        return $this->index();
+
+        return response()->json($type, 200);
     }
 
     /**
@@ -48,7 +59,13 @@ class TypeController extends Controller
      */
     public function show($id)
     {
-        return Type::where('id', $id)->first();
+       $type = Type::where('id', $id)->first();
+       if (!$type) {
+           return response()->json([
+               'message' => "ERR_NOT_FOUND",
+           ], 404);
+       }
+       return $type;
     }
 
     /**
@@ -60,15 +77,22 @@ class TypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validation = Validator::make($request->all(),
+        [
             'name'=>'required'
         ]);
+
+        if ($validation->fails()) {
+            return \response()->json([
+                'message' => $validation->errors()->messages()
+            ], 400);
+        }
 
         $type = Type::find($id);
         $type->name =  $request->get('name');
         $type->save();
 
-        return $this->index();
+        return $type;
     }
 
     /**

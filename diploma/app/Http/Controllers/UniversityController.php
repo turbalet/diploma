@@ -143,6 +143,7 @@ class UniversityController extends Controller
     public function destroy($id)
     {
         $university = University::find($id);
+
         if (!$university) {
             return response()->json([
                 'message' => "ERR_NOT_FOUND",
