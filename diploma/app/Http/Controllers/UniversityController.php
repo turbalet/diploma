@@ -19,7 +19,7 @@ class UniversityController extends Controller
      */
     public function index()
     {
-        return response(University::with('region', 'category', 'type', 'language')->get(), 200);
+        return response(University::with('region', 'category', 'type', 'language')->paginate(20), 200);
     }
 
     /**

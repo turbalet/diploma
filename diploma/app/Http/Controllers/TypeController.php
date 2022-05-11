@@ -65,7 +65,7 @@ class TypeController extends Controller
                'message' => "ERR_NOT_FOUND",
            ], 404);
        }
-       return $type;
+       return response()->json($type, 200);;
     }
 
     /**
@@ -92,7 +92,7 @@ class TypeController extends Controller
         $type->name =  $request->get('name');
         $type->save();
 
-        return $type;
+        return response()->json($type, 200);;
     }
 
     /**
