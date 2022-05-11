@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Program;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -85,11 +86,11 @@ class ProgramController extends Controller
     {
         $validation = Validator::make($request->all(),
             [
-                'name'=>'required',
-                'code'=>'required',
-                'points'=>'required|integer',
-                'grantsQuantity'=>'required|integer',
-                'degreeId' => 'required|integer'
+                'name'=>'',
+                'code'=>'',
+                'points'=>'integer',
+                'grantsQuantity'=>'integer',
+                'degreeId' => 'integer'
             ]);
 
         if ($validation->fails()) {
@@ -106,13 +107,13 @@ class ProgramController extends Controller
             ], 404);
         }
 
-        $program->name = $request->get('name');
-        $program->code = $request->get('code');
-        $program->points = $request->get('points');
-        $program->grants_quantity = $request->get('grantsQuantity');
-        $program->degree_id = $request->get('degreeId');
-
-        $program->save();
+        try {
+            $program->update($request->all());
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
+        }
 
         return $program;
     }

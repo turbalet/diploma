@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Type;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -65,7 +66,7 @@ class TypeController extends Controller
                'message' => "ERR_NOT_FOUND",
            ], 404);
        }
-       return response()->json($type, 200);;
+       return response()->json($type, 200);
     }
 
     /**
@@ -89,10 +90,22 @@ class TypeController extends Controller
         }
 
         $type = Type::find($id);
-        $type->name =  $request->get('name');
-        $type->save();
 
-        return response()->json($type, 200);;
+        if (!$type) {
+            return response()->json([
+                'message' => "ERR_NOT_FOUND",
+            ], 404);
+        }
+
+        try {
+            $type->update($request->all());
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
+        }
+
+        return response()->json($type, 200);
     }
 
     /**

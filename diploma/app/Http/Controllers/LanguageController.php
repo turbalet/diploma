@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Language;
+use App\Models\Program;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Validator;
 
 class LanguageController extends Controller
@@ -19,7 +22,7 @@ class LanguageController extends Controller
      */
     public function index()
     {
-        return Language::all();
+        return \response(Language::all(), 200);
     }
 
     /**
@@ -38,7 +41,8 @@ class LanguageController extends Controller
             'name' => $request->get('name')
         ]);
         $language->save();
-        return $this->index();
+
+        return response()->json($language, 200);
     }
 
     /**
@@ -49,8 +53,13 @@ class LanguageController extends Controller
      */
     public function show($id)
     {
-        return Language::where('id', $id)->first();
-    }
+        $language = Language::where('id', $id)->first();
+        if (!$language) {
+            return response()->json([
+                'message' => "ERR_NOT_FOUND",
+            ], 404);
+        }
+        return response()->json($language, 200);    }
 
     /**
      * Update the specified resource in storage.
@@ -61,15 +70,34 @@ class LanguageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name'=>'required'
-        ]);
+        $validation = Validator::make($request->all(),
+            [
+                'name'=>'required',
+            ]);
+
+        if ($validation->fails()) {
+            return \response()->json([
+                'message' => $validation->errors()->messages()
+            ], 400);
+        }
 
         $language = Language::find($id);
-        $language->name =  $request->get('name');
-        $language->save();
 
-        return $this->index();
+        if (!$language) {
+            return response()->json([
+                'message' => "ERR_NOT_FOUND",
+            ], 404);
+        }
+
+        try {
+            $language->update($request->all());
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
+        }
+
+        return $language;
     }
 
     /**

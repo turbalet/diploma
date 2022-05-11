@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -86,8 +87,14 @@ class CategoryController extends Controller
         }
 
         $category = Category::find($id);
-        $category->name =  $request->get('name');
-        $category->save();
+
+        try {
+            $category->update($request->all());
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
+        }
 
         return response()->json($category, 200);
     }

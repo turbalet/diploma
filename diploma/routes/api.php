@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DegreeController;
+use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\TypeController;
 use \App\Http\Controllers\UniversityController;
@@ -52,6 +54,24 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::post('/languages', [LanguageController::class, 'store']);
     Route::delete('/languages/{id}', [LanguageController::class, 'destroy']);
     Route::put('/languages/{id}', [LanguageController::class, 'update']);
+
+    Route::get('/specialities', [ProgramController::class, 'index']);
+    Route::get('/specialities/{id}', [ProgramController::class, 'show']);
+    Route::post('/specialities', [ProgramController::class, 'store']);
+    Route::delete('/specialities/{id}', [ProgramController::class, 'destroy']);
+    Route::put('/specialities/{id}', [ProgramController::class, 'update']);
+
+    Route::get('/programs', [ProgramController::class, 'index']);
+    Route::get('/programs/{id}', [ProgramController::class, 'show']);
+    Route::post('/programs', [ProgramController::class, 'store']);
+    Route::delete('/programs/{id}', [ProgramController::class, 'destroy']);
+    Route::put('/programs/{id}', [ProgramController::class, 'update']);
+
+    Route::get('/degrees', [DegreeController::class, 'index']);
+    Route::get('/degrees/{id}', [DegreeController::class, 'show']);
+    Route::post('/degrees', [DegreeController::class, 'store']);
+    Route::delete('/degrees/{id}', [DegreeController::class, 'destroy']);
+    Route::put('/degrees/{id}', [DegreeController::class, 'update']);
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {

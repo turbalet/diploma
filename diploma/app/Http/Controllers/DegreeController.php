@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Degree;
+use App\Models\Program;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DegreeController extends Controller
 {
@@ -14,14 +18,14 @@ class DegreeController extends Controller
      */
     public function index()
     {
-        return Degree::all();
+        return response(Degree::all(), 200);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store(Request $request)
     {
@@ -42,11 +46,17 @@ class DegreeController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function show($id)
     {
-        //
+        $degree = Degree::where('id', $id)->first();
+        if (!$degree) {
+            return response()->json([
+                'message' => "ERR_NOT_FOUND",
+            ], 404);
+        }
+        return response()->json($degree, 200);
     }
 
     /**
@@ -54,21 +64,59 @@ class DegreeController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function update(Request $request, $id)
     {
-        //
+        $validation = Validator::make($request->all(),
+            [
+                'name'=>'required',
+            ]);
+
+        if ($validation->fails()) {
+            return \response()->json([
+                'message' => $validation->errors()->messages()
+            ], 400);
+        }
+
+        $degree = Degree::find($id);
+
+        if (!$degree) {
+            return response()->json([
+                'message' => "ERR_NOT_FOUND",
+            ], 404);
+        }
+
+        try {
+            $degree->update($request->all());
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
+        }
+
+        return $degree;
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function destroy($id)
     {
-        //
+        $degree = Degree::find($id);
+
+        if (!$degree) {
+            return response()->json([
+                'message' => "ERR_NOT_FOUND",
+            ], 404);
+        }
+
+        $degree->delete();
+        return response()->json([
+            'message' => 'Successfully deleted'
+        ]);
     }
 }

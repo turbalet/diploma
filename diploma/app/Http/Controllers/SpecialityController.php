@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Speciality;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,7 +20,7 @@ class SpecialityController extends Controller
      */
     public function index()
     {
-        return response(Speciality::all());
+        return response(Speciality::paginate(20));
     }
 
     /**
@@ -33,7 +34,7 @@ class SpecialityController extends Controller
         $validation = Speciality::make($request->all(),
             [
                'name'=>'required',
-                'code'=>'required'
+                'code'=>''
             ]
         );
 
@@ -81,8 +82,8 @@ class SpecialityController extends Controller
     {
         $validation = Validator::make($request->all(),
             [
-                'name'=>'required',
-                'code'=>'required'
+                'name'=>'',
+                'code'=>''
             ]);
 
         if ($validation->fails()) {
@@ -92,9 +93,21 @@ class SpecialityController extends Controller
         }
 
         $speciality = Speciality::find($id);
-        $speciality->name =  $request->get('name');
-        $speciality->code = $request->get('code');
-        $speciality->save();
+
+        if (!$speciality) {
+            return response()->json([
+                'message' => "ERR_NOT_FOUND",
+            ], 404);
+        }
+
+        try {
+            $speciality->update($request->all());
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
+        }
+
 
         return response()->json($speciality, 200);
     }

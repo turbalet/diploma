@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Region;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,7 +20,7 @@ class RegionController extends Controller
      */
     public function index()
     {
-        return response(Region::all(), 200);
+        return response(Region::paginate(20), 200);
     }
 
     /**
@@ -96,8 +97,13 @@ class RegionController extends Controller
             ], 404);
         }
 
-        $region->name =  $request->get('name');
-        $region->save();
+        try {
+            $region->update($request->all());
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
+        }
 
         return $region;
     }

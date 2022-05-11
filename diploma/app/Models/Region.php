@@ -11,4 +11,5 @@ class Region extends Model
     protected $table = 'regions';
     protected $guarded = [];
     protected $hidden = ['created_at', 'updated_at'];
+    public $timestamps = false;
 }
