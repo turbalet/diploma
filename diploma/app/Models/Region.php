@@ -10,4 +10,5 @@ class Region extends Model
     use HasFactory;
     protected $table = 'regions';
     protected $guarded = [];
+    protected $hidden = ['created_at', 'updated_at'];
 }

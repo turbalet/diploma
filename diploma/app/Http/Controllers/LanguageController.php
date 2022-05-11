@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Region;
+use App\Models\Language;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
-class RegionController extends Controller
+class LanguageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,7 +19,7 @@ class RegionController extends Controller
      */
     public function index()
     {
-        return Region::all();
+        return Language::all();
     }
 
     /**
@@ -33,10 +34,10 @@ class RegionController extends Controller
             'name'=>'required'
         ]);
 
-        $region = new Region([
+        $language = new Language([
             'name' => $request->get('name')
         ]);
-        $region->save();
+        $language->save();
         return $this->index();
     }
 
@@ -48,7 +49,7 @@ class RegionController extends Controller
      */
     public function show($id)
     {
-        return Region::where('id', $id)->first();
+        return Language::where('id', $id)->first();
     }
 
     /**
@@ -64,9 +65,9 @@ class RegionController extends Controller
             'name'=>'required'
         ]);
 
-        $region = Region::find($id);
-        $region->name =  $request->get('name');
-        $region->save();
+        $language = Language::find($id);
+        $language->name =  $request->get('name');
+        $language->save();
 
         return $this->index();
     }
@@ -79,15 +80,15 @@ class RegionController extends Controller
      */
     public function destroy($id)
     {
-        $region = Region::find($id);
+        $language = Language::find($id);
 
-        if (!$region) {
+        if (!$language) {
             return response()->json([
                 'message' => "ERR_NOT_FOUND",
             ], 404);
         }
 
-        $region->delete();
+        $language->delete();
         return response()->json([
             'message' => 'Successfully deleted'
         ]);

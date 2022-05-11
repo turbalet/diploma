@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+    db:
+        platform: linux/x86_64
+        image: mysql:latest
+        volumes:
+            - "./.mysql-data/db:/var/lib/mysql"
+        restart: always
+        ports:
+            - "3307:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: rootpw
+            MYSQL_DATABASE: diploma
+            MYSQL_USER: user
+            MYSQL_PASSWORD: pass
+
+    minio:
+        image: minio/minio
+        container_name: minio-diploma
+        volumes:
+            - "./storage:/export"
+        ports:
+            - "9000:9000"
+            - "9001:9001"
+        environment:
+            MINIO_ROOT_USER: minio
+            MINIO_ROOT_PASSWORD: minio123
+        command: server --console-address ":9001" /export

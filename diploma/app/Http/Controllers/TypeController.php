@@ -3,25 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\Type;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TypeController extends Controller
 {
-    public function create()
-    {
-        dd('Creating type');
-    }
-
-    public function showAll()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function index()
     {
         return Type::all();
     }
 
-    public function showOne($id)
-    {
-        return Type::where('id', $id)->first();
-    }
-
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -32,18 +37,27 @@ class TypeController extends Controller
             'name' => $request->get('name')
         ]);
         $type->save();
-        return $this->showAll();
+        return $this->index();
     }
 
-    public function destroy($id)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return Builder|Model|object
+     */
+    public function show($id)
     {
-        $type = Type::find($id);
-        $type->delete();
-
-        return $this->showAll();
+        return Type::where('id', $id)->first();
     }
 
-
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -54,6 +68,28 @@ class TypeController extends Controller
         $type->name =  $request->get('name');
         $type->save();
 
-        return $this->showAll();
+        return $this->index();
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function destroy($id)
+    {
+        $type = Type::find($id);
+
+        if (!$type) {
+            return response()->json([
+                'message' => "ERR_NOT_FOUND",
+            ], 404);
+        }
+
+        $type->delete();
+        return response()->json([
+            'message' => 'Successfully deleted'
+        ]);
     }
 }

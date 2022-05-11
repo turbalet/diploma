@@ -3,25 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CategoryController extends Controller
 {
-    public function create()
-    {
-        dd('Creating category');
-    }
-
-    public function showAll()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function index()
     {
         return Category::all();
     }
 
-    public function showOne($id)
-    {
-        return Category::where('id', $id)->first();
-    }
-
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -32,18 +37,27 @@ class CategoryController extends Controller
             'name' => $request->get('name')
         ]);
         $category->save();
-        return $this->showAll();
+        return $this->index();
     }
 
-    public function destroy($id)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return Builder|Model|object
+     */
+    public function show($id)
     {
-        $category = Category::find($id);
-        $category->delete();
-
-        return $this->showAll();
+        return Category::where('id', $id)->first();
     }
 
-
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -54,6 +68,28 @@ class CategoryController extends Controller
         $category->name =  $request->get('name');
         $category->save();
 
-        return $this->showAll();
+        return $this->index();
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function destroy($id)
+    {
+        $category = Category::find($id);
+
+        if (!$category) {
+            return response()->json([
+                'message' => "ERR_NOT_FOUND",
+            ], 404);
+        }
+
+        $category->delete();
+        return response()->json([
+            'message' => 'Successfully deleted'
+        ]);
     }
 }

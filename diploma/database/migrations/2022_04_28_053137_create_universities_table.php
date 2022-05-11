@@ -1,12 +1,12 @@
 <?php
 
+use App\Models\Category;
+use App\Models\Language;
+use App\Models\Region;
+use App\Models\Type;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use \App\Models\Region;
-use \App\Models\Category;
-use \App\Models\Type;
-use \App\Models\Language;
 
 return new class extends Migration
 {

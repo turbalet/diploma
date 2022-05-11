@@ -10,4 +10,5 @@ class Type extends Model
     use HasFactory;
     protected $table = 'types';
     protected $guarded = [];
+    protected $hidden = ['created_at', 'updated_at'];
 }
