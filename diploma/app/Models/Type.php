@@ -11,4 +11,5 @@ class Type extends Model
     protected $table = 'types';
     protected $guarded = [];
     protected $hidden = ['created_at', 'updated_at'];
+    public $timestamps = false;
 }

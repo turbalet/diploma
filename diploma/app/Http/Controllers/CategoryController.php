@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -18,7 +20,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Category::all();
+        return response(Category::all());
     }
 
     /**
@@ -29,15 +31,21 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validation = Category::make($request->all(),[
             'name'=>'required'
         ]);
+
+        if ($validation->fails()) {
+            return response()->json([
+                'message' => $validation->errors()->messages()
+            ], 400);
+        }
 
         $category = new Category([
             'name' => $request->get('name')
         ]);
         $category->save();
-        return $this->index();
+        return response()->json($category, 200);
     }
 
     /**
@@ -48,7 +56,14 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        return Category::where('id', $id)->first();
+        $category = Category::where('id', $id)->first();
+        if (!$category) {
+            return response()->json([
+                'message' => "ERR_NOT_FOUND",
+            ], 404);
+        }
+        return response()->json($category, 200);
+
     }
 
     /**
@@ -60,15 +75,28 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name'=>'required'
-        ]);
+        $validation = Validator::make($request->all(),
+            [
+                'name'=>'required'
+            ]);
+
+        if ($validation->fails()) {
+            return \response()->json([
+                'message' => $validation->errors()->messages()
+            ], 400);
+        }
 
         $category = Category::find($id);
-        $category->name =  $request->get('name');
-        $category->save();
 
-        return $this->index();
+        try {
+            $category->update($request->all());
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
+        }
+
+        return response()->json($category, 200);
     }
 
     /**

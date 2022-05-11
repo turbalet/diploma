@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\University;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,7 +20,7 @@ class UniversityController extends Controller
      */
     public function index()
     {
-        return response(University::with('region', 'category', 'type', 'language')->get(), 200);
+        return response(University::with('region', 'category', 'type', 'language')->paginate(20), 200);
     }
 
     /**
@@ -33,10 +34,10 @@ class UniversityController extends Controller
         $validation = Validator::make($request->all(),
             [
                 'name'=>'required',
-                'description'=>'required',
-                'website'=>'required',
-                'instagram'=>'required',
-                'phoneNumber'=>'required',
+                'description'=>'',
+                'website'=>'',
+                'instagram'=>'',
+                'phoneNumber'=>'',
                 'regionId'=>'required|integer',
                 'categoryId'=>'required|integer',
                 'typeId'=>'required|integer',
@@ -92,15 +93,15 @@ class UniversityController extends Controller
     {
         $validation = Validator::make($request->all(),
         [
-            'name'=>'required',
-            'description'=>'required',
-            'website'=>'required',
-            'instagram'=>'required',
-            'phoneNumber'=>'required',
-            'regionId'=>'required|integer',
-            'categoryId'=>'required|integer',
-            'typeId'=>'required|integer',
-            'languageId'=>'required|integer'
+            'name'=>'',
+            'description'=>'',
+            'website'=>'',
+            'instagram'=>'',
+            'phoneNumber'=>'',
+            'regionId'=>'integer',
+            'categoryId'=>'integer',
+            'typeId'=>'integer',
+            'languageId'=>'integer'
         ]);
 
         if ($validation->fails()) {
@@ -117,19 +118,13 @@ class UniversityController extends Controller
             ], 404);
         }
 
-        $university->name = $request->get('name');
-        $university->description = $request->get('description');
-        $university->website = $request->get('website');
-        $university->instagram = $request->get('instagram');
-        $university->phone_number = $request->get('phoneNumber');
-        $university->region_id = $request->get('regionId');
-        $university->category_id = $request->get('categoryId');
-        $university->type_id = $request->get('typeId');
-        $university->language_id = $request->get('languageId');
-
-
-
-        $university->save();
+        try {
+            $university->update($request->all());
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
+        }
 
         return $university;
     }
@@ -143,6 +138,7 @@ class UniversityController extends Controller
     public function destroy($id)
     {
         $university = University::find($id);
+
         if (!$university) {
             return response()->json([
                 'message' => "ERR_NOT_FOUND",
