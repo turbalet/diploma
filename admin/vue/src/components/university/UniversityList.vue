@@ -18,7 +18,7 @@
         Категория
       </th>
       <th scope="col" class="text-sm px-6 py-4 text-left">
-        Кол-во баллов
+        Тип
       </th>
     </tr>
     </thead>
@@ -40,7 +40,7 @@
         {{ university.category.name }}
       </td>
       <td class="text-sm px-6 py-4 whitespace-nowrap">
-        90+
+        {{ university.type.name }}
       </td>
     </tr>
     </tbody>
