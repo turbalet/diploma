@@ -20,6 +20,7 @@ const routes = [
     children: [
       { path: "/dashboard/universities", name: "Universities", component: Universities},
       { path: "/dashboard/regions", name: "Regions", component: Regions},
+      { path: "/dashboard", name: "Dashboard1", redirect: "/dashboard/universities" },
       { path: "/surveys", name: "Surveys", component: Surveys },
       { path: "/surveys/create", name: "SurveyCreate", component: SurveyView },
       { path: "/surveys/:id", name: "SurveyView", component: SurveyView },
@@ -29,6 +30,11 @@ const routes = [
     path: "/view/survey/:slug",
     name: 'SurveyPublicView',
     component: SurveyPublicView
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: NotFound
   },
   {
     path: "/auth",
@@ -44,11 +50,6 @@ const routes = [
       },
     ],
   },
-  {
-    path: '/404',
-    name: 'NotFound',
-    component: NotFound
-  }
 ];
 
 const router = createRouter({
