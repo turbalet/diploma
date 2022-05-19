@@ -18,9 +18,41 @@ class UniversityController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response(University::with('region', 'category', 'type', 'language')->paginate(20), 200);
+        $builder = University::with(['region', 'category', 'type', 'language']);
+
+        if (($request->query('name')) && $request->query('name') != "") {
+            //$builder->whereFullText(['name'], $request->query('name'));
+            $builder->where('name', 'LIKE', "%{$request->query('name')}%");
+        }
+        if ($request->query('region') && $request->query('region')!= "") {
+            $v = $request->query('region');
+            $builder->whereHas('region', function ($q) use ($v) {
+                $q->where('name', $v);
+            });
+        }
+        if (($request->query('category')) && $request->query('category')!= "") {
+            $v = $request->query('category');
+            $builder->whereHas('category', function ($q) use ($v) {
+                $q->where('name', $v);
+            });
+        }
+        if (($request->query('language')) && $request->query('language')!= "") {
+            $v = $request->query('language');
+
+            $builder->whereHas('language', function ($q) use ($v) {
+                $q->where('name', $v);
+            });
+        }
+        if (($request->query('type')) && $request->query('type')!= "") {
+            $v = $request->query('type');
+            $builder->whereHas('type', function ($q) use ($v) {
+                $q->where('name', $v);
+            });
+        }
+
+        return response($builder->paginate(2), 200);
     }
 
     /**
@@ -33,15 +65,15 @@ class UniversityController extends Controller
     {
         $validation = Validator::make($request->all(),
             [
-                'name'=>'required',
-                'description'=>'',
-                'website'=>'',
-                'instagram'=>'',
-                'phoneNumber'=>'',
-                'regionId'=>'required|integer',
-                'categoryId'=>'required|integer',
-                'typeId'=>'required|integer',
-                'languageId'=>'required|integer'
+                'name' => 'required',
+                'description' => '',
+                'website' => '',
+                'instagram' => '',
+                'phoneNumber' => '',
+                'regionId' => 'required|integer',
+                'categoryId' => 'required|integer',
+                'typeId' => 'required|integer',
+                'languageId' => 'required|integer'
             ]);
 
         if ($validation->fails()) {
@@ -51,7 +83,7 @@ class UniversityController extends Controller
         }
 
         $university = new University([
-            'name'=> $request->get('name'),
+            'name' => $request->get('name'),
             'description' => $request->get('description'),
             'website' => $request->get('website'),
             'instagram' => $request->get('instagram'),
@@ -68,7 +100,7 @@ class UniversityController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return Builder|Model|object
      */
     public function show($id)
@@ -86,23 +118,23 @@ class UniversityController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  int  $id
+     * @param int $id
      * @return JsonResponse
      */
     public function update(Request $request, $id)
     {
         $validation = Validator::make($request->all(),
-        [
-            'name'=>'',
-            'description'=>'',
-            'website'=>'',
-            'instagram'=>'',
-            'phoneNumber'=>'',
-            'regionId'=>'integer',
-            'categoryId'=>'integer',
-            'typeId'=>'integer',
-            'languageId'=>'integer'
-        ]);
+            [
+                'name' => '',
+                'description' => '',
+                'website' => '',
+                'instagram' => '',
+                'phoneNumber' => '',
+                'regionId' => 'integer',
+                'categoryId' => 'integer',
+                'typeId' => 'integer',
+                'languageId' => 'integer'
+            ]);
 
         if ($validation->fails()) {
             return \response()->json([
@@ -112,7 +144,7 @@ class UniversityController extends Controller
 
         $university = University::find($id);
 
-        if(!$university) {
+        if (!$university) {
             return response()->json([
                 'message' => "ERR_NOT_FOUND",
             ], 404);
@@ -132,7 +164,7 @@ class UniversityController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return JsonResponse
      */
     public function destroy($id)

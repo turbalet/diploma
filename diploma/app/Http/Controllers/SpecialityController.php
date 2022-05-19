@@ -16,7 +16,7 @@ class SpecialityController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -26,8 +26,8 @@ class SpecialityController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
     public function store(Request $request)
     {
@@ -58,7 +58,7 @@ class SpecialityController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return Builder|Model|object
+     * @return JsonResponse
      */
     public function show($id)
     {
@@ -74,7 +74,7 @@ class SpecialityController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
      * @return JsonResponse
      */

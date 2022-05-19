@@ -49,7 +49,7 @@ class LanguageController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return Builder|Model|object
+     * @return JsonResponse
      */
     public function show($id)
     {

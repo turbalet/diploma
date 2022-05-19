@@ -19,8 +19,8 @@ class AuthController extends Controller
 
         if(!$user || !Hash::check($fields['password'], $user->password)) {
             return response([
-                'message' => 'Bad creds'
-            ], 401);
+                'message' => 'Неправильный логин/пароль'
+            ], 422);
         }
 
         $token = $user->createToken('mytoken')->plainTextToken;

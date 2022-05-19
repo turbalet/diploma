@@ -6,6 +6,7 @@ use App\Models\Program;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class ProgramController extends Controller
@@ -13,7 +14,7 @@ class ProgramController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {

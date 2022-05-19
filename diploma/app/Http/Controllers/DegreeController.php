@@ -7,6 +7,7 @@ use App\Models\Program;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class DegreeController extends Controller
@@ -14,7 +15,7 @@ class DegreeController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -24,7 +25,7 @@ class DegreeController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return JsonResponse
      */
     public function store(Request $request)
@@ -62,7 +63,7 @@ class DegreeController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
      * @return JsonResponse
      */
