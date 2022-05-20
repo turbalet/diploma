@@ -18,9 +18,19 @@ class RegionController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response(Region::paginate(20), 200);
+
+        $builder = Region::with([]);
+        if ($request->query('name') && $request->query('name') != "") {
+            $builder->where('name', $request->query('name'));
+        }
+
+        if ($request->query('page') == 0) {
+             return response($builder->get(), 200);
+        }
+
+        return response($builder->paginate(3), 200);
     }
 
     /**

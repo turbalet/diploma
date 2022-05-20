@@ -52,6 +52,10 @@ class UniversityController extends Controller
             });
         }
 
+        if ($request->query('page') == 0) {
+            return response($builder->get(), 200);
+        }
+
         return response($builder->paginate(2), 200);
     }
 
