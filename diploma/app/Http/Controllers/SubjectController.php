@@ -2,25 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Program;
+use App\Models\Subject;
+use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
-class ProgramController extends Controller
+class SubjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return response(Program::with('specialities')->get(), 200);
+        return response(Subject::all(), 200);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -32,36 +31,23 @@ class ProgramController extends Controller
     {
         $validation = Validator::make($request->all(),
             [
-                'name'=>'required',
-                'code'=>'required',
-                'points'=>'required|integer',
-                'grantsQuantity'=>'required|integer',
-                'degreeId' => 'required|integer',
-                'firstSubject' => 'required|integer',
-                'secondSubject' => 'required|integer',
-            ]);
+                'name'=>'required'
+            ]
+        );
 
         if ($validation->fails()) {
-            return \response()->json([
+            return response()->json([
                 'message' => $validation->errors()->messages()
             ], 400);
         }
 
-
-        $program = new Program([
-            'name' => $request->get('name'),
-            'code' => $request->get('code'),
-            'points' => $request->get('points'),
-            'grants_quantity' => $request->get('grantsQuantity'),
-            'degree_id' => $request->get('degreeId'),
-            'first_subject' => $request->get('firstSubject'),
-            'second_subject' => $request->get('secondSubject')
-
+        $subject = new Subject([
+            'name' => $request->get('name')
         ]);
 
-        $program -> save();
+        $subject->save();
 
-        return response()->json($program, 200);
+        return response()->json($subject, 200);
     }
 
     /**
@@ -72,13 +58,13 @@ class ProgramController extends Controller
      */
     public function show($id)
     {
-        $program = Program::with('specialities')->where('id', $id)->first();
-        if (!$program) {
+        $subject = Subject::where('id', $id)->first();
+        if (!$subject) {
             return response()->json([
                 'message' => "ERR_NOT_FOUND",
             ], 404);
         }
-        return response()->json($program, 200);
+        return response()->json($subject, 200);
     }
 
     /**
@@ -92,13 +78,7 @@ class ProgramController extends Controller
     {
         $validation = Validator::make($request->all(),
             [
-                'name'=>'',
-                'code'=>'',
-                'points'=>'integer',
-                'grantsQuantity'=>'integer',
-                'degreeId' => 'integer',
-                'firstSubject' => 'integer',
-                'secondSubject' => 'integer',
+                'name'=>'required'
             ]);
 
         if ($validation->fails()) {
@@ -107,23 +87,23 @@ class ProgramController extends Controller
             ], 400);
         }
 
-        $program = Program::find($id);
+        $subject = Subject::find($id);
 
-        if (!$program) {
+        if (!$subject) {
             return response()->json([
                 'message' => "ERR_NOT_FOUND",
             ], 404);
         }
 
         try {
-            $program->update($request->all());
+            $subject->update($request->all());
         } catch (QueryException $e) {
             return response()->json([
                 'message' => $e->getMessage(),
             ], 400);
         }
 
-        return $program;
+        return response()->json($subject, 200);
     }
 
     /**
@@ -134,15 +114,15 @@ class ProgramController extends Controller
      */
     public function destroy($id)
     {
-        $program = Program::find($id);
+        $subject = Subject::find($id);
 
-        if (!$program) {
+        if (!$subject) {
             return response()->json([
                 'message' => "ERR_NOT_FOUND",
             ], 404);
         }
 
-        $program->delete();
+        $subject->delete();
         return response()->json([
             'message' => 'Successfully deleted'
         ]);
