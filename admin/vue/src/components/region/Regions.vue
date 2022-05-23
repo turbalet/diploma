@@ -1,64 +1,78 @@
 <template>
   <div class="flex flex-row mx-10 mt-10">
     <div class="mr-10">
-      <input type="search" class="bg-secondary shadow rounded-xl border border-none text-white" placeholder="Поиск">
+      <input type="search" @change="changeInput" v-model="region.name" class="bg-secondary shadow rounded-xl border border-none text-white" placeholder="Поиск">
       <!--          <div class="absolute pin-r pin-t mt-3 mr-4 text-purple-lighter">-->
       <!--            <img src="../assets/search.svg" alt="search.svg">-->
       <!--          </div>-->
     </div>
-    <div class="mr-10">
-      <select class="select select-ghost text-white rounded-xl bg-secondary border-none">
-        <option disabled selected>Регион</option>
-        <option>Алматы</option>
-      </select>
-    </div>
-    <div class="mr-10">
-      <select class="select select-ghost  text-white rounded-xl bg-secondary border-none">
-        <option disabled selected>Категория</option>
-        <option>Частный</option>
-      </select>
-    </div>
   </div>
   <div class="mt-10 flex flex-row justify-between">
     <div class="ml-10 font-bold  text-yellow-500 ">
-      <p>Всего: 148</p>
+      <p>Всего: {{!regions.loading ? regions.data.total : 0}}</p>
     </div>
-    <div>
-      <div>
-        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-          <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border-r-4 border-primary bg-sky-600 text-sm font-medium text-white hover:bg-sky-700">
-            <span class="sr-only">Previous</span>
-            <ChevronLeftIcon class="h-5 w-5" aria-hidden="true" />
-          </a>
-          <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
-          <a href="#" aria-current="page" class="z-10 bg-secondary border-indigo-500 text-white relative inline-flex items-center px-4 py-2 border-none text-sm font-medium"> 1 </a>
-          <a href="#" class="bg-secondary  text-gray-500 hover:bg-yellow-600 hover:text-black relative inline-flex items-center px-4 py-2 border-none text-sm font-medium"> 2 </a>
-          <a href="#" class="bg-secondary  text-gray-500 hover:bg-yellow-600 hover:text-black hidden md:inline-flex relative items-center px-4 py-2 border-none text-sm font-medium"> 3 </a>
-          <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border-l-4 border-primary bg-sky-600 text-sm font-medium text-white hover:bg-sky-700">
-            <span class="sr-only">Next</span>
-            <ChevronRightIcon class="h-5 w-5" aria-hidden="true" />
-          </a>
-        </nav>
-      </div>
-    </div>
+    <paginate
+        v-model="currentPage"
+        :page-count="!regions.loading ? regions.data.last_page : 1"
+        :container-class="'bg-secondary rounded-xl text-gray-400 flex flex-row h-9'"
+        :page-class="'bg-secondary w-9 h-9  flex items-center justify-center hover:bg-yellow-600  hover:cursor-pointer hover:text-black relative inline-flex items-center px-4 py-2 border-none text-sm font-medium'"
+        :active-class="'text-black bg-yellow-600 '"
+        :disabled-class="'hover:bg-secondary hover:text-gray-400'"
+
+        :hide-pred-next="true"
+        :prev-class="'flex justify-center bg-indigo-600 hover:text-white hover:cursor-pointer text-white w-9 h-9 bg-indigo-700 h-full rounded-l-xl items-center'"
+        :next-text="'>'"
+        :prev-text="'<'"
+        :next-class="'flex justify-center hover:cursor-pointer  text-white w-9 h-9 bg-indigo-600 h-full rounded-r-xl items-center hover:bg-indigo-700'"
+        :click-handler="search">
+    </paginate>
     <div class="">
-      <button class="bg-sky-600 hover:bg-sky-700 font-bold py-3 px-3 text-sm text-gray-200 rounded-2xl mr-3">+ Добавить</button>
+      <button class="bg-indigo-600 hover:bg-indigo-700 font-bold py-3 px-3 text-sm text-gray-200 rounded-2xl mr-3">+ Добавить</button>
     </div>
   </div>
-  <div class="flex flex-col">
+  <div v-if="!regions.loading" class="flex flex-col">
     <div class="overflow-x-auto ">
       <div class=" inline-block min-w-full">
         <div class="overflow-hidden">
-          <RegionList />
+          <RegionList :regions="regions"/>
         </div>
       </div>
+    </div>
+  </div>
+  <div v-if="regions.loading" class=" text-center flex my-auto w-full h-full">
+    <div  class="flex items-center mx-auto justify-center">
+      <img src="../../assets/loading.svg"  alt="loading" class="animate-spin animate-spin-mid w-10">
     </div>
   </div>
 </template>
 <script setup>
 import RegionList from './RegionList.vue';
-import {ChevronLeftIcon, ChevronRightIcon} from "@heroicons/vue/solid";
+import Paginate from 'vuejs-paginate-next';
+import store from "../../store";
+import {computed, ref} from "vue";
 
+const region = {
+  name: ""
+}
+
+function changeInput() {
+  currentPage.value = 1
+  store.dispatch("getRegions", { page: 1, name: region.name })
+}
+
+function search(page) {
+  if (!page) {
+    page = 1
+  }
+  store.dispatch("getRegions", { page: page, name: region.name })
+}
+
+let currentPage = ref(1);
+const regions = computed(() => store.state.regions);
+
+store.dispatch("getRegions", { page: 1, name: region.name})
+
+console.log(regions.data)
 </script>
 
 <style scoped>

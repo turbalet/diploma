@@ -16,6 +16,8 @@ module.exports = {
       },
       animation: {
         'fade-in-down': "fade-in-down 0.2s ease-in-out both",
+        'spin-slow': 'spin 5s linear infinite',
+        'spin-mid': 'spin 3s linear infinite',
       },
       colors: {
         secondary: '#2A2D3E',
