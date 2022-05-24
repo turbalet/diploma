@@ -9,9 +9,9 @@
       </tr>
       </thead>
       <tbody >
-      <tr @click="sendEmit(category)" :class="ind % 2 === 1 ? 'bg-secondary' : ''" v-for="(category, ind) in categories.data" class="bg-primary text-white hover:bg-yellow-700 hover:cursor-pointer " >
+      <tr @click="sendEmit(language)" :class="ind % 2 === 1 ? 'bg-secondary' : ''" v-for="(language, ind) in languages.data" class="bg-primary text-white hover:bg-yellow-700 hover:cursor-pointer " >
         <td class="text-sm font-bold border-yellow-600 px-10 py-4 whitespace-nowrap overflow-y-auto">
-          {{ category.name }}
+          {{ language.name }}
         </td>
       </tr>
       </tbody>
@@ -21,11 +21,11 @@
 
 <script setup>
 
-const props = defineProps(['categories'])
-const categories = props.categories
-const emit = defineEmits(['category'])
-function sendEmit(category) {
-  emit('category', category)
+const props = defineProps(['languages'])
+const types = props.languages
+const emit = defineEmits(['language'])
+function sendEmit(language) {
+  emit('language', language)
 }
 
 </script>

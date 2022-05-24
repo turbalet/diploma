@@ -86,12 +86,112 @@ const store = createStore({
                 return res;
             });
         },
-        getCategories({commit},) {
+        getCategories({commit}, category) {
             commit('setCategoryLoading', true)
-            return axiosClient.get('/categories').then((res) => {
+            return axiosClient.get('/categories', {
+                params: {
+                    name: category.name
+                }
+            }).then((res) => {
                 commit('setCategoryLoading', false)
                 commit('setCategories', res.data);
                 return res;
+            });
+        },
+        saveCategory({commit, dispatch}, category) {
+            let response;
+            if (category.id) {
+                response = axiosClient.put(`/categories/${category.id}`, category).then((res) => {
+                    return res;
+                }).catch(()=> {
+                    commit('notify', {
+                        message: "Произошла ошибка",
+                        type: 'error'
+                    })
+                })
+            } else {
+                response = axiosClient.post(`/categories`, category).then((res) => {
+                    return res;
+                }).catch(()=> {
+                    commit('notify', {
+                        message: "Произошла ошибка",
+                        type: 'error'
+                    })
+                })
+            }
+        },
+        saveType({commit, dispatch}, type) {
+            let response;
+            if (type.id) {
+                response = axiosClient.put(`/types/${type.id}`, type).then((res) => {
+                    return res;
+                }).catch(()=> {
+                    commit('notify', {
+                        message: "Произошла ошибка",
+                        type: 'error'
+                    })
+                })
+            } else {
+                response = axiosClient.post(`/types`, type).then((res) => {
+                    return res;
+                }).catch(()=> {
+                    commit('notify', {
+                        message: "Произошла ошибка",
+                        type: 'error'
+                    })
+                })
+            }
+        },
+        saveLanguage({commit, dispatch}, language) {
+            let response;
+            if (language.id) {
+                response = axiosClient.put(`/languages/${language.id}`, language).then((res) => {
+                    return res;
+                }).catch(() => {
+                    commit('notify', {
+                        message: "Произошла ошибка",
+                        type: 'error'
+                    })
+                })
+            } else {
+                response = axiosClient.post(`/languages`, language).then((res) => {
+                    return res;
+                }).catch(()=> {
+                    commit('notify', {
+                        message: "Произошла ошибка",
+                        type: 'error'
+                    })
+                })
+            }
+        },
+        deleteLanguage({dispatch, commit}, id) {
+            return axiosClient.delete(`/languages/${id}`).then((res) => {
+                return res;
+            }).catch((error) => {
+                commit("notify", {
+                    type: 'error',
+                    message: 'Ошибка'
+                })
+            });
+        },
+        deleteType({dispatch, commit}, id) {
+            return axiosClient.delete(`/types/${id}`).then((res) => {
+                return res;
+            }).catch(() => {
+                commit("notify", {
+                    type: 'error',
+                    message: "Произошла ошибка"
+                })
+            });
+        },
+        deleteCategory({dispatch, commit}, id) {
+            return axiosClient.delete(`/categories/${id}`).then((res) => {
+                return res;
+            }).catch(() => {
+                commit("notify", {
+                    type: 'error',
+                    message: "Произошла ошибка"
+                })
             });
         },
         getRegions({commit}, data) {
@@ -148,7 +248,87 @@ const store = createStore({
                commit('notify', 'success')
                return res;
             });
-        }
+        },
+        saveUniversity({commit, dispatch}, university) {
+            delete university.image_url;
+            university.region_id = university.region.id;
+            university.language_id = university.language.id;
+            university.category_id =  university.category.id;
+            university.type_id = university.type.id;
+            delete university.region;
+            delete university.language;
+            delete university.category;
+            delete university.type;
+            let response;
+            if (university.id) {
+                response = axiosClient
+                    .put(`/universities/${university.id}`, university)
+                    .then((res)=> {
+                        return res;
+                    }).catch(()=> {
+                        commit('notify', {
+                            message: "Произошла ошибка",
+                            type: 'error'
+                        })
+                    })
+            } else {
+                response = axiosClient
+                    .post("/universities", university).then((res) => {
+                        return res;
+                    }).catch(() => {
+                        commit('notify', {
+                            message: "Произошла ошибка",
+                            type: 'error'
+                        })
+                    })
+            }
+            return response;
+        },
+        deleteUniversity({dispatch, commit}, id) {
+            return axiosClient.delete(`/universities/${id}`).then((res) => {
+               return res;
+            }).catch(() => {
+                commit("notify", {
+                    type: 'error',
+                    message: "Произошла ошибка"
+                })
+            });
+        },
+        saveRegion({commit, dispatch}, region) {
+            let response;
+            if (region.id) {
+                response = axiosClient
+                    .put(`/regions/${region.id}`, region)
+                    .then((res)=> {
+                        return res;
+                    }).catch(() => {
+                        commit('notify', {
+                            message: "Произошла ошибка",
+                            type: 'error'
+                        })
+                    })
+            } else {
+                response = axiosClient
+                    .post("/regions", region).then((res) => {
+                        return res;
+                    }).catch(() => {
+                        commit('notify', {
+                            message: "Произошла ошибка",
+                            type: 'error'
+                        })
+                    })
+            }
+            return response;
+        },
+        deleteRegion({dispatch, commit}, id) {
+            return axiosClient.delete(`/regions/${id}`).then((res) => {
+                commit('notify', {
+                    message: "Успешно удалено",
+                    type: 'success'
+                })
+                return res;
+            });
+        },
     },
     mutations: {
         logout: (state) => {
@@ -193,8 +373,9 @@ const store = createStore({
         setLanguageLoading: (state, loading) => {
             state.languages.loading = loading
         },
-        notify: (state, message) => {
+        notify: (state, {message, type}) => {
             state.notification.show = true;
+            state.notification.type = type
             state.notification.message = message;
             setTimeout(() => {
                 state.notification.show = false;

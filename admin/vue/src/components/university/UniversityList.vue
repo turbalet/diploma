@@ -28,7 +28,7 @@
       </thead>
       <tbody >
       <tr @click="sendEmit(university)" :class="ind % 2 === 1 ? 'bg-secondary' : ''" v-for="(university, ind) in universities.data.data" class="bg-primary text-white hover:bg-yellow-700 hover:cursor-pointer " >
-        <td class="text-sm border-yellow-600 px-6 whitespace-nowrap overflow-y-auto">
+        <td class="text-sm font-bold border-yellow-600 px-6 whitespace-nowrap overflow-y-auto">
           {{ university.name }}
         </td>
         <td class="text-sm border-yellow-600  px-6 w-2/12 py-4 whitespace-nowrap overflow-y-auto ">

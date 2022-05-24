@@ -11,12 +11,12 @@
           </select>
         </div>
         <div class="mx-3">
-          <button class="bg-yellow-600 text-gray-900 hover:bg-yellow-500 font-bold py-3 px-7 rounded-2xl" @click="logout"> Выход </button>
+          <button class="bg-yellow-600 text-gray-900 hover:bg-yellow-700 font-bold py-3 px-7 rounded-2xl" @click="logout"> Выход </button>
         </div>
       </div>
       <router-view></router-view>
     </div>
-
+    <Notification />
   </div>
 </template>
 
@@ -36,7 +36,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/solid'
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import Notification from "./Notification.vue";
-import University from './university/University.vue';
 import Sidebar from './Sidebar.vue';
 import UniversityList from './university/UniversityList.vue';
 
@@ -61,7 +60,6 @@ export default {
     MenuIcon,
     XIcon,
     Notification,
-    University,
     Sidebar,
     ChevronLeftIcon,
     ChevronRightIcon,

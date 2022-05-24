@@ -2,9 +2,6 @@
   <div class="flex flex-row mx-10 mt-10">
     <div class="mr-10">
       <input type="search" @change="changeInput" v-model="region.name" class="bg-secondary shadow rounded-xl border border-none text-white" placeholder="Поиск">
-      <!--          <div class="absolute pin-r pin-t mt-3 mr-4 text-purple-lighter">-->
-      <!--            <img src="../assets/search.svg" alt="search.svg">-->
-      <!--          </div>-->
     </div>
   </div>
   <div class="mt-10 flex flex-row justify-between">
@@ -34,7 +31,7 @@
     <div class="overflow-x-auto ">
       <div class=" inline-block min-w-full">
         <div class="overflow-hidden">
-          <RegionList :regions="regions"/>
+          <RegionList  :regions="regions" @region="getRegion" @currentPage="getCurrentPage"/>
         </div>
       </div>
     </div>
@@ -44,6 +41,32 @@
       <img src="../../assets/loading.svg"  alt="loading" class="animate-spin animate-spin-mid w-10">
     </div>
   </div>
+<!--  <div v-if="show" class="absolute min-h-screen h-full inset-y-0 overflow-auto right-0 w-5/12 bg-secondary">-->
+<!--    <form @submit.prevent="saveUniversity">-->
+<!--      <div class="flex flex-col">-->
+<!--        <div class="flex flex-row justify-around mt-10 mr-5 ml-2 h-36">-->
+<!--          <div @click="close">-->
+<!--            <img src="../../assets/close.svg" class="hover:cursor-pointer" alt="close.svg">-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="flex flex-col justify-around w-full mt-10">-->
+<!--          <div class="flex text-sm flex-col w-11/12 ml-5 content-end text-white ">-->
+<!--            <label for="name" class="font-medium text-right">Название</label>-->
+<!--            <div class="flex flex-row mt-2 w-full justify-end  ">-->
+<!--              <div class="w-4/5">-->
+<!--                <input type="text" name="name" required v-model="model.name" class="bg-input focus:outline-none focus:ring focus:ring-indigo-600 w-full shadow text-sm rounded-xl  border-none text-white"-->
+<!--                       placeholder="Поиск">-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="w-full justify-end  flex">-->
+<!--          <button type="submit"   class="bg-indigo-700 mr-4 mb-5 rounded-xl p-3.5 mt-5 text-sm text-white font-bold hover:bg-indigo-800 hover:cursor-pointer focus:outline focus:outline-indigo-500">Сохранить</button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </form>-->
+<!--  </div>-->
+
 </template>
 <script setup>
 import RegionList from './RegionList.vue';
@@ -53,6 +76,20 @@ import {computed, ref} from "vue";
 
 const region = {
   name: ""
+}
+
+const model = ref({
+  name: ""
+})
+
+let show = ref(false);
+
+function getRegion(region) {
+  model.value = region
+}
+
+function getCurrentPage(page) {
+  currentPage.value = page
 }
 
 function changeInput() {
@@ -71,8 +108,6 @@ let currentPage = ref(1);
 const regions = computed(() => store.state.regions);
 
 store.dispatch("getRegions", { page: 1, name: region.name})
-
-console.log(regions.data)
 </script>
 
 <style scoped>
