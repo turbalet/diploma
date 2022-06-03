@@ -198,16 +198,7 @@
               </div>
             </div>
           </div>
-          <div class="flex text-sm flex-col w-11/12 ml-5 mt-5 text-white">
-            <label for="name" class="font-medium text-right">Добавить специальность</label>
-            <div class="flex flex-row mt-2 justify-end w-full">
-              <div class="w-4/5">
-                <select  v-model="" class="select w-full text-sm select-ghost focus:ring focus:ring-indigo-600  text-white rounded-xl bg-input border-none">
-                  <option name="" :selected="language.name === model.language.name" v-for="language in languages.data" :value="language.id">{{ language.name }}</option>
-                </select>
-              </div>
-            </div>
-          </div>
+
 
 
         </div>

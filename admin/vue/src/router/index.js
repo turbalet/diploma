@@ -8,11 +8,11 @@ import DefaultLayout from "../components/DefaultLayout.vue";
 import AuthLayout from "../components/AuthLayout.vue";
 import store from "../store";
 import Universities from "../components/university/Universities.vue";
+import University from "../components/university/University.vue";
 import Regions from "../components/region/Regions.vue";
 import Categories from "../components/category/Categories.vue";
 import Types from "../components/type/Types.vue";
 import Languages from "../components/language/Languages.vue";
-
 
 const routes = [
   {
@@ -23,6 +23,7 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       { path: "/dashboard/universities", name: "Universities", component: Universities},
+      { path: "/dashboard/university/:id", name: "University", component: University},
       { path: "/dashboard/regions", name: "Regions", component: Regions},
       { path: "/dashboard/categories", name: "Categories", component: Categories},
       { path: "/dashboard/types", name: "Types", component: Types},
