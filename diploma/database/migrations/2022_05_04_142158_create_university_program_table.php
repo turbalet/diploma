@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('university_program', function (Blueprint $table) {
             $table->id();
-            $table->integer('program_id');
-            $table->integer('university_id');
+            $table->unsignedInteger('program_id');
+            $table->unsignedInteger('university_id');
         });
     }
 
