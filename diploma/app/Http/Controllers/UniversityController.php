@@ -32,7 +32,7 @@ class UniversityController extends Controller
                 });
             }
         } else {
-            $builder = University::with(['region', 'category', 'type', 'language']);
+            $builder = University::with(['region', 'category', 'type', 'language', 'programs']);
         }
 
         if (($request->query('name')) && $request->query('name') != "") {

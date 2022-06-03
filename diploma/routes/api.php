@@ -43,6 +43,11 @@ Route::get('/specialities', [SpecialityController::class, 'index']);
 Route::get('/specialities/{id}', [SpecialityController::class, 'show']);
 Route::get('/subjects', [SubjectController::class, 'index']);
 Route::get('/subjects/{id}', [SubjectController::class, 'show']);
+Route::get('/programs/exclude/university/{id}', [ProgramController::class, 'excludeUniversityPrograms']);
+Route::get('/programs/university/{id}', [ProgramController::class, 'universityPrograms']);
+Route::get('/specialities/exclude/program/{programId}/university/{uniId}', [SpecialityController::class, 'excludeUniversitySpecialities']);
+Route::get('/specialities/program/{programId}/university/{uniId}', [SpecialityController::class, 'universitySpecialities']);
+
 
 Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::post('/regions', [RegionController::class, 'store']);
