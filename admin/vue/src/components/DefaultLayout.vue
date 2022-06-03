@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-primary relative flex flex-row">
+  <div class="bg-primary h-full flex flex-row">
     <Sidebar />
     <div class="flex flex-col w-full">
       <div class="flex flex-row justify-between w-full mt-10">
@@ -11,15 +11,12 @@
           </select>
         </div>
         <div class="mx-3">
-          <button class="bg-yellow-500 hover:bg-yellow-600 font-bold py-3 px-7 rounded-2xl" @click="logout"> Выход </button>
+          <button class="bg-yellow-600 text-gray-900 hover:bg-yellow-700 font-bold py-3 px-7 rounded-2xl" @click="logout"> Выход </button>
         </div>
       </div>
       <router-view></router-view>
     </div>
-    <!--    <div class="absolute inset-y-0 right-0 w-4/12 bg-secondary">-->
-    <!--      <University />-->
-    <!--    </div>-->
-
+    <Notification />
   </div>
 </template>
 
@@ -39,13 +36,15 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/solid'
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import Notification from "./Notification.vue";
-import University from './university/University.vue';
 import Sidebar from './Sidebar.vue';
 import UniversityList from './university/UniversityList.vue';
 
 const navigation = [
   { name: "Университеты", to: {name: "Universities"}},
   { name: "Регионы", to: {name: "Regions"}},
+  { name: "Категории", to: {name: "Categories"}},
+  { name: "Типы", to: {name: "Types"}},
+  { name: "Языки", to: {name: "Languages"}},
 ];
 
 export default {
@@ -61,7 +60,6 @@ export default {
     MenuIcon,
     XIcon,
     Notification,
-    University,
     Sidebar,
     ChevronLeftIcon,
     ChevronRightIcon,
