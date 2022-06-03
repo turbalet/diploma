@@ -31,17 +31,19 @@ class TypeController extends Controller
      */
     public function store(Request $request)
     {
-        $validation = Validator::make($request->all(),
-            [
-                'name'=>'required'
-            ]
-        );
+//        $validation = Validator::make($request->all(),
+//            [
+//                'name'=>'required'
+//            ]
+//        );
+//
+//        if ($validation->fails()) {
+//            return response()->json([
+//                'message' => $validation->errors()->messages()
+//            ], 400);
+//        }
 
-        if ($validation->fails()) {
-            return response()->json([
-                'message' => $validation->errors()->messages()
-            ], 400);
-        }
+
 
         $type = new Type([
             'name' => $request->get('name')

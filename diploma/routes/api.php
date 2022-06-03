@@ -60,6 +60,8 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::post('/universities', [UniversityController::class, 'store']);
     Route::delete('/universities/{id}', [UniversityController::class, 'destroy']);
     Route::put('/universities/{id}', [UniversityController::class, 'update']);
+    Route::post('/universities/image/{id}', [UniversityController::class, 'updateImage']);
+
 
     Route::post('/languages', [LanguageController::class, 'store']);
     Route::delete('/languages/{id}', [LanguageController::class, 'destroy']);
@@ -87,3 +89,5 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+

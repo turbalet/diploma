@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Program;
+use App\Models\University;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,9 +17,55 @@ class ProgramController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response(Program::with('specialities')->get(), 200);
+        $builder = Program::with(['degree','first_subject', 'second_subject']);
+
+        if ($request->query('name') && $request->query('name') != "") {
+            $builder->where('name', $request->query('name'));
+        }
+
+        if (($request->query('degree')) && $request->query('degree')!= "") {
+            $v = $request->query('degree');
+            $builder->whereHas('degree', function ($q) use ($v) {
+                $q->where('name', $v);
+            });
+        }
+
+        if(($request->query('first_subject')) && $request->query('first_subject')!= "" && $request->query('second_subject') && $request->query('second_subject')!= "") {
+            $v1 = $request->query('first_subject');
+            $v2 = $request->query('second_subject');
+
+            ($builder->whereHas('second_subject', function ($q) use ($v2) {
+                $q->where('name', $v2);
+            })->whereHas('first_subject', function ($q) use ($v1) {
+                $q->where('name', $v1);
+            }))->orWhereHas('second_subject', function ($q) use ($v1) {
+                $q->where('name', $v1);
+            })->whereHas('first_subject', function ($q) use ($v2) {
+                $q->where('name', $v2);
+            });
+        } elseif(($request->query('first_subject')) && $request->query('first_subject')!= "") {
+            $v = $request->query('first_subject');
+            $builder->whereHas('first_subject', function ($q) use ($v) {
+                $q->where('name', $v);
+            })->orWhereHas('second_subject', function ($q) use ($v) {
+                $q->where('name', $v);
+            });
+        } elseif($request->query('second_subject') && $request->query('second_subject')!= "") {
+            $v = $request->query('second_subject');
+            $builder->whereHas('second_subject', function ($q) use ($v) {
+                $q->where('name', $v);
+            })->orWhereHas('first_subject', function ($q) use ($v) {
+                $q->where('name', $v);
+            });
+        }
+
+        if (!$request->query('page') || $request->query('page')== 0) {
+            return response($builder->get(), 200);
+        }
+
+        return response($builder->paginate(5), 200);
     }
 
 
@@ -72,7 +119,7 @@ class ProgramController extends Controller
      */
     public function show($id)
     {
-        $program = Program::with('specialities')->where('id', $id)->first();
+        $program = Program::with(['degree', 'specialities', 'first_subject', 'second_subject'])->where('id', $id)->first();
         if (!$program) {
             return response()->json([
                 'message' => "ERR_NOT_FOUND",

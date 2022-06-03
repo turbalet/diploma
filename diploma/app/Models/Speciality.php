@@ -18,8 +18,18 @@ class Speciality extends Model
         return $this->belongsToMany(University::class, 'university_speciality');
     }
 
-    public function programs(): BelongsToMany
+    public function program()
     {
-        return $this->belongsToMany(Program::class, 'speciality_program');
+        return $this->belongsTo(Program::class);
+    }
+
+    public function first_subject()
+    {
+        return $this->belongsTo(Subject::class, 'first_subject');
+    }
+
+    public function second_subject()
+    {
+        return $this->belongsTo(Subject::class, 'second_subject');
     }
 }

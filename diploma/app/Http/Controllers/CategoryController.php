@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,8 +16,13 @@ class CategoryController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
+
+        if ($request->query('name') && $request->query('name') != "") {
+            return response(Category::all()->where('name', $request->query('name')));
+        }
+
         return response(Category::all());
     }
 
@@ -31,20 +34,17 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $validation = Category::make($request->all(),[
-            'name'=>'required'
-        ]);
+//        $validation = Category::make($request->all(),[
+//            'name'=>'required'
+//        ]);
+//
+//        if ($validation->fails()) {
+//            return response()->json([
+//                'message' => $validation->errors()->messages()
+//            ], 400);
+//        }
 
-        if ($validation->fails()) {
-            return response()->json([
-                'message' => $validation->errors()->messages()
-            ], 400);
-        }
-
-        $category = new Category([
-            'name' => $request->get('name')
-        ]);
-        $category->save();
+        $category = Category::create($request->all());
         return response()->json($category, 200);
     }
 

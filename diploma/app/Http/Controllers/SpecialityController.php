@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Speciality;
+use App\Models\University;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
@@ -18,9 +19,58 @@ class SpecialityController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response(Speciality::paginate(20));
+        if (($request->query('programs')) && ($request->query('programs'))[0] != "" ) {
+            $builder = Speciality::with(['program', 'first_subject', 'second_subject']);
+            $v = $request->query('programs');
+            $builder -> whereHas('program', function ($q) use ($v) {
+                $q -> where('name', $v);
+            });
+        } else {
+            $builder = Speciality::with(['program.degree', 'first_subject', 'second_subject']);
+        }
+
+        if(($request->query('first_subject')) && $request->query('first_subject')!= "" && $request->query('second_subject') && $request->query('second_subject')!= "") {
+            $v1 = $request->query('first_subject');
+            $v2 = $request->query('second_subject');
+
+            ($builder->whereHas('second_subject', function ($q) use ($v2) {
+                $q->where('name', $v2);
+            })->whereHas('first_subject', function ($q) use ($v1) {
+                $q->where('name', $v1);
+            }))->orWhereHas('second_subject', function ($q) use ($v1) {
+                $q->where('name', $v1);
+            })->whereHas('first_subject', function ($q) use ($v2) {
+                $q->where('name', $v2);
+            });
+        } elseif(($request->query('first_subject')) && $request->query('first_subject')!= "") {
+            $v = $request->query('first_subject');
+            $builder->whereHas('first_subject', function ($q) use ($v) {
+                $q->where('name', $v);
+            })->orWhereHas('second_subject', function ($q) use ($v) {
+                $q->where('name', $v);
+            });
+        } elseif($request->query('second_subject') && $request->query('second_subject')!= "") {
+            $v = $request->query('second_subject');
+            $builder->whereHas('second_subject', function ($q) use ($v) {
+                $q->where('name', $v);
+            })->orWhereHas('first_subject', function ($q) use ($v) {
+                $q->where('name', $v);
+            });
+        }
+
+
+        if ($request->query('name') && $request->query('name') != "") {
+            $builder->where('name', 'like' , '%'.$request->query('name').'%');
+        }
+
+
+        if ($request->query('page') == 0) {
+            return response($builder->get(), 200);
+        }
+
+        return response($builder->paginate(2), 200);
     }
 
     /**
@@ -62,7 +112,7 @@ class SpecialityController extends Controller
      */
     public function show($id)
     {
-        $speciality = Speciality::where('id', $id)->first();
+        $speciality = Speciality::with(['program.degree', 'first_subject', 'second_subject', 'universities.language', 'universities.type', 'universities.category', 'universities.region'])->where('id', $id)->first();
         if (!$speciality) {
             return response()->json([
                 'message' => "ERR_NOT_FOUND",
