@@ -10,6 +10,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class SpecialityController extends Controller
@@ -71,6 +72,22 @@ class SpecialityController extends Controller
         }
 
         return response($builder->paginate(2), 200);
+    }
+
+    public function excludeUniversitySpecialities(Request $request, $programId, $uniId) {
+        $specialities = DB::select('select s.id, s.name, s.code,s.program_id from specialities s left join university_speciality us on s.id = us.speciality_id
+            and us.university_id = '.$uniId.' where us.speciality_id is null and s.program_id = '.$programId.';');
+
+
+        return response($specialities, 200);
+    }
+
+    public function universitySpecialities(Request $request, $programId, $uniId) {
+        $specialities = DB::select('select s.id, s.name, s.code, us.points, s.program_id from specialities s left join university_speciality us on s.id = us.speciality_id
+            and us.university_id = '.$uniId.' where us.speciality_id is not null and s.program_id = '.$programId.';');
+
+
+        return response($specialities, 200);
     }
 
     /**

@@ -8,6 +8,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ProgramController extends Controller
@@ -68,6 +69,27 @@ class ProgramController extends Controller
         return response($builder->paginate(5), 200);
     }
 
+    public function excludeUniversityPrograms(Request $request, $id)
+    {
+        $builder = Program::with(['degree','first_subject', 'second_subject']);
+
+        $programs = DB::select('select p.id, p.name, p.code from programs p left join university_program up on p.id = up.program_id
+    and up.university_id = '.$id.' where up.program_id is null');
+
+
+        return response($programs, 200);
+    }
+
+    public function universityPrograms(Request $request, $id)
+    {
+        $builder = Program::with(['degree','first_subject', 'second_subject']);
+
+        $programs = DB::select('select p.id, p.name, p.code from programs p left join university_program up on p.id = up.program_id
+    and up.university_id = '.$id.' where up.program_id is not null');
+
+
+        return response($programs, 200);
+    }
 
     /**
      * Store a newly created resource in storage.
