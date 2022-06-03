@@ -86,11 +86,29 @@
             </div>
           </div>
           <div class=" w-44 h-36">
+            <label for="name" class="font-medium text-right text-white w-full">Баннер</label>
             <img class="w-full h-full border-4 border-indigo-700 rounded-xl" v-if="model.image_url"
                  :src="model.image_url"
                  :alt="model.title" >
             <div class="w-full h-full border-4 border-indigo-700 rounded-xl"  v-else>
-              <img v-if="model.image" class="w-full rounded-xl h-full rounded-xl " :src="model.image" :alt="model.title" />
+              <img v-if="model.banner" class="w-full rounded-xl h-full rounded-xl " :src="model.banner" :alt="model.title" />
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-row justify-around  mt-10 mr-5 ml-24 h-36">
+          <div class="flex flex-col">
+            <div class="overflow-hidden  relative w-32 h-64 mt-4 mb-4">
+              <input type="file"
+                     @change="onLogoChoose">
+            </div>
+          </div>
+          <div class=" w-44 h-36">
+            <label for="name" class="font-medium text-right text-white w-full">Логотип</label>
+            <img class="w-full h-full border-4 border-indigo-700 rounded-xl" v-if="model.logo_url"
+                 :src="model.logo_url"
+                 :alt="model.title" >
+            <div class="w-full h-full border-4 border-indigo-700 rounded-xl"  v-else>
+              <img v-if="model.logo" class="w-full rounded-xl h-full rounded-xl " :src="model.logo" :alt="model.title" />
             </div>
           </div>
         </div>
@@ -180,6 +198,18 @@
               </div>
             </div>
           </div>
+          <div class="flex text-sm flex-col w-11/12 ml-5 mt-5 text-white">
+            <label for="name" class="font-medium text-right">Добавить специальность</label>
+            <div class="flex flex-row mt-2 justify-end w-full">
+              <div class="w-4/5">
+                <select  v-model="" class="select w-full text-sm select-ghost focus:ring focus:ring-indigo-600  text-white rounded-xl bg-input border-none">
+                  <option name="" :selected="language.name === model.language.name" v-for="language in languages.data" :value="language.id">{{ language.name }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+
         </div>
         <div class="flex justify-end flex-row ">
           <div class="flex">
@@ -216,13 +246,14 @@ function showAddForm() {
     website: "",
     phone_number: "",
     instagram: "",
-    image: "",
+    banner: "",
+    logo: "",
     image_url: null,
     updated_image: null,
     region: {},
     category: {},
     type: {},
-    language: {}
+    language: {},
   }
   show.value = true
 
@@ -230,7 +261,6 @@ function showAddForm() {
 
 function close() {
   show.value = false
-  currentPage.value = 1
  // store.dispatch("getUniversities", { page: 1, universityData: university })
 }
 
@@ -251,7 +281,6 @@ function search(page) {
   store.dispatch("getUniversities", { page: page, universityData: university })
 }
 
-const image = null;
 let currentPage = ref(1);
 let show = ref(false);
 
@@ -261,14 +290,18 @@ const model = ref({
   website: "",
   phone_number: "",
   instagram: "",
-  image: "",
+  banner: "",
+  logo: "",
   image_url: null,
+  logo_url: null,
   updated_image: null,
+  updated_logo: null,
   region: {},
   category: {},
   type: {},
-  language: {}
-});
+  language: {},
+  programs: [],
+})
 
 function onImageChoose(ev) {
   const file = ev.target.files[0];
@@ -280,6 +313,21 @@ function onImageChoose(ev) {
 
     // The field to display here
     model.value.image_url = reader.result;
+    ev.target.value = "";
+  };
+  reader.readAsDataURL(file);
+}
+
+function onLogoChoose(ev) {
+  const file = ev.target.files[0];
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    // The field to send on backend and apply validations
+    model.value.updated_logo = reader.result;
+
+    // The field to display here
+    model.value.logo_url = reader.result;
     ev.target.value = "";
   };
   reader.readAsDataURL(file);

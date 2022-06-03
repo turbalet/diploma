@@ -70,15 +70,14 @@ const store = createStore({
         },
         getUniversities({commit}, data) {
             commit('setUniversityLoading', true)
-            console.log(data)
             return axiosClient.get('/universities', {
                 params: {
                     page: data.page,
                     name: data.universityData.name,
-                    region: data.universityData.region,
+                    regions: [data.universityData.region],
                     category: data.universityData.category,
-                    type: data.universityData.type,
-                    language: data.universityData.language
+                    types: [data.universityData.type],
+                    languages: [data.universityData.language]
                 }
             }).then((res) => {
                 commit('setUniversityLoading', false)
@@ -251,6 +250,7 @@ const store = createStore({
         },
         saveUniversity({commit, dispatch}, university) {
             delete university.image_url;
+            delete university.logo_url;
             university.region_id = university.region.id;
             university.language_id = university.language.id;
             university.category_id =  university.category.id;

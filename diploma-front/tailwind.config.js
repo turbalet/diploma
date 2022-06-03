@@ -4,7 +4,11 @@ module.exports = {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'criteria': "url('./src/assets/criteria-bg.svg')"
+      }
+    },
   },
   plugins: [],
 }
