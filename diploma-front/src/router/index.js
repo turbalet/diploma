@@ -4,6 +4,8 @@ import Home from "../views/Home.vue";
 import Specialities from "../views/Specialities.vue";
 import University from "../views/University.vue";
 import Speciality from "../views/Speciality.vue";
+import Rating from "../views/Rating.vue";
+
 
 const routes = [
     {
@@ -30,6 +32,11 @@ const routes = [
         path: "/speciality/:id",
         name: 'Speciality',
         component: Speciality
+    },
+    {
+        path: "/rating",
+        name: 'Rating',
+        component: Rating
     }
 ];
 

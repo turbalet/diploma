@@ -104,6 +104,19 @@ const store = createStore({
                 return res;
             });
         },
+        getRating({commit, state}, data) {
+            console.log(data)
+          return axiosClient.get(`/universities/rating/${data.data.speciality}`, {
+              params: {
+                  region: data.data.region,
+                  name: data.data.name
+              }
+          })
+              .then((res) => {
+                  state.universities.data = res.data
+                  return res;
+              })
+        },
         getSpecialities({commit}, data) {
             return axiosClient.get('/specialities', {
                 params: {
@@ -332,6 +345,7 @@ const store = createStore({
             delete university.region;
             delete university.language;
             delete university.category;
+            delete university.programs;
             delete university.type;
             let response;
             if (university.id) {

@@ -150,6 +150,15 @@
             </div>
           </div>
           <div class="flex text-sm flex-col w-11/12 ml-5 mt-5 text-white">
+            <label for="name" class="font-medium text-right">Год основания </label>
+            <div class="flex flex-row mt-2 justify-end w-full">
+              <div class="w-4/5">
+                <input type="text" v-model="model.opened" name="instagram" class="bg-input focus:ring focus:ring-indigo-600  text-sm w-full shadow rounded-xl border border-none text-white"
+                       placeholder="Поиск">
+              </div>
+            </div>
+          </div>
+          <div class="flex text-sm flex-col w-11/12 ml-5 mt-5 text-white">
             <label for="name" class="font-medium text-right">Номер телефона</label>
             <div class="flex flex-row mt-2 justify-end w-full">
               <div class="w-4/5">
@@ -236,6 +245,7 @@ function showAddForm() {
     description: "",
     website: "",
     phone_number: "",
+    opened: 0,
     instagram: "",
     banner: "",
     logo: "",
@@ -280,6 +290,7 @@ const model = ref({
   description: "",
   website: "",
   phone_number: "",
+  opened: 0,
   instagram: "",
   banner: "",
   logo: "",
@@ -291,7 +302,6 @@ const model = ref({
   category: {},
   type: {},
   language: {},
-  programs: [],
 })
 
 function onImageChoose(ev) {

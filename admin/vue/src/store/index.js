@@ -16,6 +16,14 @@ const store = createStore({
             links: [],
             data: []
         },
+        programs: {
+            loading: false,
+            currentPage: 1,
+            data: []
+        },
+        university: {
+            data: {}
+        },
         universities: {
             loading: false,
             currentPage: 1,
@@ -67,6 +75,48 @@ const store = createStore({
                     console.log(res);
                     commit('setUser', res.data)
                 })
+        },
+        getPrograms({commit}, data) {
+            commit('setProgramLoading', true)
+
+            return axiosClient.get('/programs', {
+                params: {
+                    page: data.page,
+                    name: data.programData.name
+                }
+            }).then((res) => {
+                commit('setProgramLoading', false)
+                commit('setPrograms', res.data);
+                return res;
+            });
+        },
+        saveProgram({commit, dispatch}, program) {
+            let response;
+            if (program.id) {
+                response = axiosClient.put(`/programs/${program.id}`, program).then((res) => {
+                    return res;
+                }).catch(()=> {
+                    commit('notify', {
+                        message: "Произошла ошибка",
+                        type: 'error'
+                    })
+                })
+            } else {
+                response = axiosClient.post(`/programs`, program).then((res) => {
+                    return res;
+                }).catch(()=> {
+                    commit('notify', {
+                        message: "Произошла ошибка",
+                        type: 'error'
+                    })
+                })
+            }
+        },
+        getUniversity({commit, state}, data) {
+            return axiosClient.get(`/universities/${data.id}`).then((res) => {
+                state.university.data = res.data
+                return res;
+            });
         },
         getUniversities({commit}, data) {
             commit('setUniversityLoading', true)
@@ -329,6 +379,15 @@ const store = createStore({
                 return res;
             });
         },
+        deleteProgram({dispatch, commit}, id) {
+            return axiosClient.delete(`/programs/${id}`).then((res) => {
+                commit('notify', {
+                    message: "Успешно удалено",
+                    type: 'success'
+                })
+                return res;
+            });
+        }
     },
     mutations: {
         logout: (state) => {
@@ -372,6 +431,12 @@ const store = createStore({
         },
         setLanguageLoading: (state, loading) => {
             state.languages.loading = loading
+        },
+        setPrograms: (state, data) => {
+            state.programs.data = data
+        },
+        setProgramLoading: (state, loading) => {
+            state.programs.loading = loading
         },
         notify: (state, {message, type}) => {
             state.notification.show = true;

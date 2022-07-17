@@ -27,7 +27,7 @@
       </tr>
       </thead>
       <tbody >
-      <tr @click="toUniversity(university)" :class="ind % 2 === 1 ? 'bg-secondary' : ''" v-for="(university, ind) in universities.data.data" class="bg-primary text-white hover:bg-yellow-700 hover:cursor-pointer " >
+      <tr @click="sendEmit(university)" :class="ind % 2 === 1 ? 'bg-secondary' : ''" v-for="(university, ind) in universities.data.data" class="bg-primary text-white hover:bg-yellow-700 hover:cursor-pointer " >
         <td class="text-sm font-bold border-yellow-600 px-6 whitespace-nowrap overflow-y-auto">
           {{ university.name }}
         </td>
@@ -61,7 +61,7 @@ const props = defineProps(['universities'])
 const universities = props.universities
 
 function toUniversity(university) {
-  router.push({name: 'University', params: {id: university.id}})
+  router.push({name: 'University', params: {id: university.id, university: university}})
 }
 
 const emit = defineEmits(['university'])
