@@ -56,9 +56,13 @@
 </template>
 
 <script setup>
-
+import router from "../../router";
 const props = defineProps(['universities'])
 const universities = props.universities
+
+function toUniversity(university) {
+  router.push({name: 'University', params: {id: university.id, university: university}})
+}
 
 const emit = defineEmits(['university'])
 function sendEmit(university) {

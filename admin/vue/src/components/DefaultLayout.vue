@@ -45,6 +45,7 @@ const navigation = [
   { name: "Категории", to: {name: "Categories"}},
   { name: "Типы", to: {name: "Types"}},
   { name: "Языки", to: {name: "Languages"}},
+  { name: "Программы", to: {name: "Programs"}}
 ];
 
 export default {

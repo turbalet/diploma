@@ -5,7 +5,7 @@
       <div class="flex flex-row w-2/5 justify-around font-medium">
         <div><a href="/universities">Вузы</a></div>
         <div><a href="/specialities">Специальности</a></div>
-        <div><a href="/news">Новости</a></div>
+        <div><a href="/rating">Рейтинг</a></div>
       </div>
     </div>
   </div>
