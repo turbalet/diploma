@@ -16,7 +16,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-    'host' => env('APP_HOST', 'http://localhost:8000'),
+    'host' => env('APP_HOST', 'http://localhost:8000/'),
     /*
     |--------------------------------------------------------------------------
     | Application Environment

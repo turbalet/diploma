@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -69,7 +70,50 @@ class UniversityController extends Controller
             return response($builder->get(), 200);
         }
 
-        return response($builder->paginate(2), 200);
+        return response($builder->paginate(5), 200);
+    }
+
+
+    public function rating(Request $request, $specialityId)
+    {
+
+        $universities = DB::select('
+                select u.name as name, r.name as region, s.name as speciality, s.code as code, us.points
+                from universities u
+                join university_speciality us on u.id = us.university_id
+                join regions r on u.region_id = r.id
+                join specialities s on us.speciality_id = s.id
+                where us.speciality_id = '.$specialityId.' order by us.points;
+                ');
+
+        if ($specialityId !== 0) {
+            $universities = DB::table('universities', 'u')
+                ->join('university_speciality', 'u.id', '=', 'university_speciality.university_id')
+                ->join('regions', 'u.region_id', '=', 'regions.id')
+                ->join('specialities', 'university_speciality.speciality_id', '=', 'specialities.id')
+                ->select('u.name', 'regions.name as region', 'specialities.name as speciality', 'specialities.code as code', 'university_speciality.points as points')
+                ->where('university_speciality.speciality_id', $specialityId);
+            //->paginate(2);
+        } else {
+            $universities = DB::table('universities', 'u')
+                ->join('university_speciality', 'u.id', '=', 'university_speciality.university_id')
+                ->join('regions', 'u.region_id', '=', 'regions.id')
+                ->join('specialities', 'university_speciality.speciality_id', '=', 'specialities.id')
+                ->select('u.name', 'regions.name as region', 'specialities.name as speciality', 'specialities.code as code', 'university_speciality.points as points')
+                ->where('university_speciality.speciality_id', '!=', 0);
+
+        }
+
+        if ($request->query('name') && $request->query('name')[0] != "") {
+            $universities->where('u.name', 'like', '%'.$request->query('name').'%');
+        }
+
+        if ($request->query('region') && $request->query('region')[0] != "") {
+            $universities->where('regions.name', $request->query('region'));
+        }
+
+
+        return response($universities->orderByDesc('university_speciality.points')->get(), 200);
     }
 
     /**
@@ -202,6 +246,7 @@ class UniversityController extends Controller
                 File::delete($absolutePath);
             }
         }
+        unset($data['programs']);
         unset($data['updated_image']);
         unset($data['updated_logo']);
 

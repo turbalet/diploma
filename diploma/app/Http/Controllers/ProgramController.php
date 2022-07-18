@@ -26,12 +26,6 @@ class ProgramController extends Controller
             $builder->where('name', $request->query('name'));
         }
 
-        if (($request->query('degree')) && $request->query('degree')!= "") {
-            $v = $request->query('degree');
-            $builder->whereHas('degree', function ($q) use ($v) {
-                $q->where('name', $v);
-            });
-        }
 
         if(($request->query('first_subject')) && $request->query('first_subject')!= "" && $request->query('second_subject') && $request->query('second_subject')!= "") {
             $v1 = $request->query('first_subject');
@@ -58,6 +52,13 @@ class ProgramController extends Controller
             $builder->whereHas('second_subject', function ($q) use ($v) {
                 $q->where('name', $v);
             })->orWhereHas('first_subject', function ($q) use ($v) {
+                $q->where('name', $v);
+            });
+        }
+
+        if (($request->query('degree')) && $request->query('degree')!= "") {
+            $v = $request->query('degree');
+            $builder->whereHas('degree', function ($q) use ($v) {
                 $q->where('name', $v);
             });
         }
@@ -99,36 +100,37 @@ class ProgramController extends Controller
      */
     public function store(Request $request)
     {
-        $validation = Validator::make($request->all(),
-            [
-                'name'=>'required',
-                'code'=>'required',
-                'points'=>'required|integer',
-                'grantsQuantity'=>'required|integer',
-                'degreeId' => 'required|integer',
-                'firstSubject' => 'required|integer',
-                'secondSubject' => 'required|integer',
-            ]);
+//        $validation = Validator::make($request->all(),
+//            [
+//                'name'=>'required',
+//                'code'=>'required',
+//                'points'=>'required|integer',
+//                'grantsQuantity'=>'required|integer',
+//                'degreeId' => 'required|integer',
+//                'firstSubject' => 'required|integer',
+//                'secondSubject' => 'required|integer',
+//            ]);
+//
+//        if ($validation->fails()) {
+//            return \response()->json([
+//                'message' => $validation->errors()->messages()
+//            ], 400);
+//        }
 
-        if ($validation->fails()) {
-            return \response()->json([
-                'message' => $validation->errors()->messages()
-            ], 400);
-        }
 
+//        $program = new Program([
+//            'name' => $request->get('name'),
+//            'code' => $request->get('code'),
+//            'points' => $request->get('points'),
+//            'grants_quantity' => $request->get('grantsQuantity'),
+//            'degree_id' => $request->get('degreeId'),
+//            'first_subject' => $request->get('firstSubject'),
+//            'second_subject' => $request->get('secondSubject')
+//
+//        ]);
 
-        $program = new Program([
-            'name' => $request->get('name'),
-            'code' => $request->get('code'),
-            'points' => $request->get('points'),
-            'grants_quantity' => $request->get('grantsQuantity'),
-            'degree_id' => $request->get('degreeId'),
-            'first_subject' => $request->get('firstSubject'),
-            'second_subject' => $request->get('secondSubject')
-
-        ]);
-
-        $program -> save();
+        $data = $request->all();
+        $program = Program::create($data);
 
         return response()->json($program, 200);
     }

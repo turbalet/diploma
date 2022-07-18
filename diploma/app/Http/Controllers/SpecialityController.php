@@ -22,14 +22,17 @@ class SpecialityController extends Controller
      */
     public function index(Request $request)
     {
+
+
+        $builder = Speciality::with(['program.degree', 'first_subject', 'second_subject']);
         if (($request->query('programs')) && ($request->query('programs'))[0] != "" ) {
-            $builder = Speciality::with(['program', 'first_subject', 'second_subject']);
             $v = $request->query('programs');
             $builder -> whereHas('program', function ($q) use ($v) {
                 $q -> where('name', $v);
             });
-        } else {
-            $builder = Speciality::with(['program.degree', 'first_subject', 'second_subject']);
+        }
+        if ($request->query('name') && $request->query('name') != "") {
+            $builder->where('name', 'like' , '%'.$request->query('name').'%');
         }
 
         if(($request->query('first_subject')) && $request->query('first_subject')!= "" && $request->query('second_subject') && $request->query('second_subject')!= "") {
@@ -62,16 +65,13 @@ class SpecialityController extends Controller
         }
 
 
-        if ($request->query('name') && $request->query('name') != "") {
-            $builder->where('name', 'like' , '%'.$request->query('name').'%');
-        }
 
 
         if ($request->query('page') == 0) {
             return response($builder->get(), 200);
         }
 
-        return response($builder->paginate(2), 200);
+        return response($builder->paginate(5), 200);
     }
 
     public function excludeUniversitySpecialities(Request $request, $programId, $uniId) {

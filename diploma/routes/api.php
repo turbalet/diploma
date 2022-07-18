@@ -47,6 +47,7 @@ Route::get('/programs/exclude/university/{id}', [ProgramController::class, 'excl
 Route::get('/programs/university/{id}', [ProgramController::class, 'universityPrograms']);
 Route::get('/specialities/exclude/program/{programId}/university/{uniId}', [SpecialityController::class, 'excludeUniversitySpecialities']);
 Route::get('/specialities/program/{programId}/university/{uniId}', [SpecialityController::class, 'universitySpecialities']);
+Route::get('/universities/rating/{specialityId}', [UniversityController::class, 'rating']);
 
 
 Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
